@@ -92,7 +92,7 @@ class CustomerAppoinmentController extends Controller
             ->withHeader('accept: application/json')
             ->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->withHeader('Authorization: Basic c2tfdGVzdF9ZRXBWVVF4S1VaSnZDdWFuejY0VFExeHg6')
+            ->withHeader('Authorization: Basic c2tfdGVzdF9HUUV4Y2RrM0tjZkF5cUFVOW96TE42dkw6')
             ->withData($data) // Pass the data here
             ->asJson()
             ->post();
@@ -109,7 +109,7 @@ class CustomerAppoinmentController extends Controller
         $response = Curl::to("https://api.paymongo.com/v1/checkout_sessions/$sessionID")
             ->withHeader('Content-type: application/json')
             ->withHeader('accept: application/json')
-            ->withHeader('Authorization: Basic c2tfdGVzdF9ZRXBWVVF4S1VaSnZDdWFuejY0VFExeHg6')
+            ->withHeader('Authorization: Basic c2tfdGVzdF9HUUV4Y2RrM0tjZkF5cUFVOW96TE42dkw6')
             ->asJson()
             ->get();
         // dd($response->data->attributes->line_items[0]->amount);

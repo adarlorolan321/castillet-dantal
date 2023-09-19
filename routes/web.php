@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DentalServiceController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\UnavalableDatesController;
 use App\Http\Controllers\Apointment\ApointmentController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Customer\CustomerCalendarController;
 use App\Http\Controllers\Customer\ServiceController;
 use App\Http\Controllers\Customer\UserHistoryController;
@@ -75,6 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/histories', UserHistoryController::class);
     Route::resource('apointment', ApointmentController::class);
+    Route::resource('chats', ChatController::class);
     
     Route::resource('unavailable-dates', UnavalableDatesController::class);
     Route::resource('dental-services', DentalServiceController::class);

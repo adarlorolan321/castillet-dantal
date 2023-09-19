@@ -38,7 +38,7 @@ class UserCheckupHistoryController extends Controller
             })
             ->where('email', "!=", 'admin@admin.com')
             ->where('email', "!=", 'dentist@admin.com')
-            ->orderBy('date', 'DESC')
+            ->orderBy('created_at', 'DESC')
             ->when(count($sort) == 1, function ($query) use ($sort, $order) {
                 $query->orderBy($sort[0], $order);
             })
