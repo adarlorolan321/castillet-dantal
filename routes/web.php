@@ -14,6 +14,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserCheckupHistoryController;
 use App\Models\Admin\DentalService;
 use App\Models\Apointment\Apointment;
+use App\Models\Payment\Payment;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -45,29 +48,49 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-        'service' =>$service,
+        'service' => $service,
         'auth' => $auth,
     ]);
 })->name('home');
 
 Route::get('/dashboard', function () {
+    $service = DentalService::get();
+    $todayDate = now()->format('Y-m-d');
+
     
-    if(auth()->user()->role == 'Admin'){
-        return Inertia::render('Dashboard');
-    }
+     // Format today's date to match your format
+    // Get today's date
+    $todayDate = Carbon::now();
+
+    // Get all appointments where the date is greater than today
+    $appointments = Apointment::where('date', '>=', $todayDate)->get();
    
-    else{
+    $user = User::where('id','!=', auth()->user()->id)->get();
+    $totalAmount = Payment::sum('amount');
+
+    // dd($totalAmount);
+
+    if (auth()->user()->role == 'Admin') {
+        return Inertia::render(
+            'Dashboard',
+            [
+                'service' => $service,
+                'appointments' => $appointments,
+                'user' => $user,
+                'totalAmount' => $totalAmount
+            ]
+        );
+    } else {
         $service = DentalService::get();
         foreach ($service as $servicing) {
             $servicing['photo'] = json_decode($servicing['photo']);
         }
-        $data = Apointment::with(['user','service'])->where('user_id', auth()->user()->id)->get();
+        $data = Apointment::with(['user', 'service'])->where('user_id', auth()->user()->id)->get();
         return Inertia::render('Welcome', [
             'data' => $data,
-            'service' =>$service
+            'service' => $service
         ]);
     }
-   
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -77,7 +100,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/histories', UserHistoryController::class);
     Route::resource('apointment', ApointmentController::class);
     Route::resource('chats', ChatController::class);
-    
+
     Route::resource('unavailable-dates', UnavalableDatesController::class);
     Route::resource('dental-services', DentalServiceController::class);
     Route::resource('customer-apointment', CustomerAppoinmentController::class);
@@ -85,14 +108,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('user-history', UserCheckupHistoryController::class);
     // Route::get('user-history/{id}',[UserCheckupHistoryController::class, 'showData'])->name('user-history.getData');
     Route::resource('payments', PaymentController::class);
-    Route::get('pay',[ CustomerAppoinmentController::class,'pay'])->name('pay');
-    Route::get('store_apointment',[ CustomerAppoinmentController::class,'store_apointment'])->name('store_apointment');
-    Route::get('get-my-apointment',[ CustomerAppoinmentController::class,'getMyAppointment'])->name('getMyAppointment');
+    Route::resource('customer-appointments', CustomerAppoinmentController::class);
+    Route::get('pay', [CustomerAppoinmentController::class, 'pay'])->name('pay');
+    Route::get('store_apointment', [CustomerAppoinmentController::class, 'store_apointment'])->name('store_apointment');
+    Route::get('get-my-apointment', [CustomerAppoinmentController::class, 'getMyAppointment'])->name('getMyAppointment');
+    Route::get('reciept/{id}', [CustomerAppoinmentController::class, 'reciept'])->name('reciept');
     Route::prefix("customer")->group(function () {
         Route::resource('slots', CustomerCalendarController::class);
         Route::resource('services', ServiceController::class);
-      
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

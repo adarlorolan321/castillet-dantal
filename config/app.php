@@ -170,6 +170,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Ixudra\Curl\CurlServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -185,6 +186,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'Curl'          => Ixudra\Curl\Facades\Curl::class,
+        'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

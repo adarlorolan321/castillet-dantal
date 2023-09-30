@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, defineEmits, ref, computed, watch, onMounted } from "vue";
 import toastr from "toastr";
-import 'toastr/build/toastr.css';
+import "toastr/build/toastr.css";
 import CustomerLayout from "@/Layouts/CustomerLayout.vue";
 import { Head, useForm, router, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
@@ -19,14 +19,15 @@ const options = ref([
 ]);
 
 let form = useForm({
-    id: null,
+    id: props.id,
     date: null,
     time_start: null,
     time_end: null,
-    service_id:null,
-    payment_status:'Partial',
+    service_id: null,
+    payment_status: "Partial",
     status: "Pending",
     type: null,
+    user_id: user.value.id,
     // user_id: user.value.id,
 });
 
@@ -52,13 +53,16 @@ const props = defineProps({
         type: Object,
         default: {},
     },
+    message: {
+        type: String,
+        default: "Appointment",
+    },
+
     show: {
         type: Boolean,
         default: false,
     },
 });
-
-
 
 watch([() => props.show, () => props.data], () => {
     if (props.show && props.data) {
@@ -74,7 +78,7 @@ function openModal() {
     addSlotModal.value.style.display = "flex";
 }
 onMounted(() => {
-    if(errors.value.date){
+    if (errors.value.date) {
         toastr.error(errors.value.date);
     }
 });
@@ -90,24 +94,33 @@ function closeMOdal() {
 }
 
 const submit = () => {
-    
-     
+    if (form.id != null) {
+        form.patch(route("customer-apointment.update", { id: form.id }), {
+            onError: (error) => {
+                this.form.errors = error.errors;
+            },
+            onSuccess: () => {
+                closeMOdal();
+                
+            }
+        });
+    }
+    else {
         const amount = 20000;
-        
-        const param2 = "another value";
 
-        const encodedAmount = encodeURIComponent(amount);
-        
+const param2 = "another value";
 
-        const url = `/pay?amount=${encodedAmount}&id=${form.id}&date=${form.date}&time_start=${form.time_start}&time_end=${form.time_end}&status=${form.status}&type=${form.type}&payment_status=${form.payment_status}&service_id=${form.service_id}`;
+const encodedAmount = encodeURIComponent(amount);
 
-        window.location.href = url;
-       
-    
+const url = `/pay?amount=${encodedAmount}&id=${form.id}&date=${form.date}&time_start=${form.time_start}&time_end=${form.time_end}&status=${form.status}&type=${form.type}&payment_status=${form.payment_status}&service_id=${form.service_id}`;
+
+window.location.href = url;
+    }
+
+   
 };
 </script>
 <template>
-    
     <div
         ref="addSlotModal"
         tabindex="-1"
@@ -115,9 +128,10 @@ const submit = () => {
         class="modal fixed z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
     >
         <div class="relative w-full max-w-2xl max-h-full">
-            
-            <div class="appointment-form  h-100 d-flex flex-column justify-content-center text-center p-5 wow zoomIn">
-                <!-- Modal header -->
+            <div
+                class="appointment-form h-100 d-flex flex-column justify-content-center text-center p-5 wow zoomIn"
+            >
+                
                 <div
                     class="flex items-start justify-between p-4 border-b rounded-t dark:border-white-600"
                 >
@@ -154,11 +168,15 @@ const submit = () => {
                 <form @submit.prevent="submit">
                     <div class="p-6 space-y-6">
                         <div class="d-flex mx-5 gap-3 mb-3">
-                            <div class="mt-4  w-100">
-                                <InputLabel for="time_start fc-event-title" value="Date" style="color: white;"/> 
+                            <div class="mt-4 w-100">
+                                <InputLabel
+                                    for="time_start fc-event-title"
+                                    value="Date"
+                                    style="color: white"
+                                />
 
                                 <input
-                                   placeholder="Date"
+                                    placeholder="Date"
                                     id="date"
                                     type="date"
                                     class="form-control bg-light border-0"
@@ -172,8 +190,12 @@ const submit = () => {
                                     :message="errors.date"
                                 />
                             </div>
-                            <div class="mt-4  w-100">
-                                <InputLabel for="time_start fc-event-title" value="Time" style="color: white;"/>
+                            <div class="mt-4 w-100">
+                                <InputLabel
+                                    for="time_start fc-event-title"
+                                    value="Time"
+                                    style="color: white"
+                                />
 
                                 <select
                                     v-model="form.time_start"
@@ -194,12 +216,17 @@ const submit = () => {
                                     :message="form.errors?.password"
                                 />
                             </div>
-                            </div>
-                            <div class="d-flex mx-5 gap-3 mb-3">
+                        </div>
+                        <div class="d-flex mx-5 gap-3 mb-3">
                             <div class="w-100">
-                                <InputLabel for="time_start" value="Service" style="color: white;"/>
+                                <InputLabel
+                                    for="time_start"
+                                    value="Service"
+                                    style="color: white"
+                                />
 
                                 <select
+                                    :disabled="form.id"
                                     v-model="form.service_id"
                                     class="form-select bg-light border-0"
                                 >
@@ -218,10 +245,15 @@ const submit = () => {
                                     :message="form.errors?.password"
                                 />
                             </div>
-                            <div class=" w-100">
-                                <InputLabel for="time_start" value="Type" style="color: white;"/>
+                            <div class="w-100">
+                                <InputLabel
+                                    for="time_start"
+                                    value="Type"
+                                    style="color: white"
+                                />
 
                                 <select
+                                    :disabled="form.id"
                                     v-model="form.type"
                                     class="form-select bg-light border-0"
                                 >

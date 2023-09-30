@@ -13,6 +13,7 @@ use App\Models\Admin\DentalService;
 use App\Models\Payment\Payment;
 use Carbon\Carbon;
 use Ixudra\Curl\Facades\Curl;
+use PDF;
 use Illuminate\Support\Facades\URL;
 
 class CustomerAppoinmentController extends Controller
@@ -104,6 +105,10 @@ class CustomerAppoinmentController extends Controller
     }
     public function store_apointment(Request $request)
     {
+        $hasAppointment = Apointment::where('user_id', auth()->user()->id)->first();
+        if ($hasAppointment) {
+            return redirect()->route('dashboard');
+        }
         $sessionID = \Session::get('session_id');
 
         $response = Curl::to("https://api.paymongo.com/v1/checkout_sessions/$sessionID")
@@ -139,24 +144,53 @@ class CustomerAppoinmentController extends Controller
         $validatedData['status'] = 'Pending';
 
 
-
+       
         $newAppointment = Apointment::create($validatedData);
 
-        Payment::create([
+        $payment = Payment::create([
             'user_id' => auth()->user()->id,
             'apointment_id' => $newAppointment->id,
             'amount' => $paymentAmount,
             'payment_method' => $validatedData['payment_method'],
             'payment_status' => 'Partial Payment',
         ]);
+       
+
 
 
 
         if ($request->wantsJson()) {
             return new ApointmentListResource($newAppointment);
         }
-
+        // $pdf = PDF::loadView('document', compact('payment')); // Replace 'pdf.viewName' with the name of your view
+        // return $pdf->download('document.pdf');
         return redirect()->route('home')->with('success', 'Appointment created successfully');
+    }
+
+    public function reciept(Request $request, string $id)
+    {
+        $payment = Payment::where('apointment_id', $id)->first();
+
+        $now = Carbon::now();
+        $receiptDate = $now->format('Y-m-d H:i:s');
+        $service_id = Apointment::where('id', $payment['apointment_id'])->pluck('service_id')->first();
+
+        $service_name = DentalService::where('id',  $service_id )->pluck('name')->first();
+        // Create a unique receipt number using date, hour, and second
+        $receiptNumber = $now->format('YmdHis');
+
+        $payment['receipt_number'] = $receiptNumber;
+        $payment['receipt_date'] = $receiptDate;
+        $payment['service_name'] = $service_name;
+
+
+
+
+        if ($request->wantsJson()) {
+            return new ApointmentListResource($newAppointment);
+        }
+        $pdf = PDF::loadView('document', compact('payment')); // Replace 'pdf.viewName' with the name of your view
+        return $pdf->stream('document.pdf');
     }
     public function index(Request $request)
     {
@@ -259,6 +293,7 @@ class CustomerAppoinmentController extends Controller
 
         $validatedData['time_end'] = $endTime;
         $validatedData['status'] = 'Pending';
+        $validatedData['user_id'] = auth()->user()->id;
 
         // dd($data);
         $data->update($validatedData);

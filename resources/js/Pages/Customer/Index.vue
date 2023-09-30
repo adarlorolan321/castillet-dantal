@@ -16,17 +16,30 @@ const error = computed(() => usePage().props.errors);
 
 let form_data = reactive(null);
 
-let form = useForm({
-    id: null,
-    date: null,
-    time_start: null,
-    time_end: null,
-    status: "Pending",
-    type: null,
-    
+
+
+const props = defineProps({
+    label: {
+        type: String,
+        default: "Appointment",
+    },
+    data: {
+        type: Object,
+        default: null,
+    }
 });
 
-
+let form = useForm({
+    id: props.data.id,
+    date: props.data.date,
+    time_start: props.data.time_start,
+    time_end: props.data.time_end,
+    status: props.data.status,
+    type: props.data.id,
+    service_id: props.data.service_id,
+    payment_status: props.data.payment_status,
+    type: props.data.type,
+});
 
 const isModalShow = ref(false);
 
@@ -44,16 +57,20 @@ const closeMOdal = () => {
 </script>
 
 <template>
-   
-        <AddSlotModal
-            @close="closeMOdal"
-            :data="form_data"
-            :service="form_data"
-            :show="isModalShow"
-        >
-    
+    <AddSlotModal
+        @close="closeMOdal"
+        :data="form"
+        :service="form_data"
+        :show="isModalShow"
+       
+    >
     </AddSlotModal>
-      
-            <a href="javascript:void(0);" class="btn btn-primary bg-green py-md-3 px-md-5 me-3 "  @click="openModal" type="button">Appointment</a >
-        
+
+    <a
+        href="javascript:void(0);"
+        class="btn btn-primary bg-green py-md-3 px-md-5 me-3"
+        @click="openModal"
+        type="button"
+        >{{ props.label }}</a
+    >
 </template>

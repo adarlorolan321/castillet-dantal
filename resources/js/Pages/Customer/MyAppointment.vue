@@ -1,6 +1,7 @@
 <script>
 import CustomerLayout from "@/Layouts/CustomerLayout.vue";
 import Appointment from "../Customer/Index.vue";
+
 export default {
     props: {
         data: Object,
@@ -16,15 +17,44 @@ export default {
 </script>
 <script setup>
 import { computed, onBeforeMount, onMounted, ref } from "vue";
-import { usePage } from "@inertiajs/vue3";
+import { usePage,router  } from "@inertiajs/vue3";
 import toastr from "toastr";
 import 'toastr/build/toastr.css';
+import Swal from "sweetalert2";
 
 const data = computed(() => {
     return usePage().props.appointment;
 });
 
+const deleteAppointment = async (id) => {
+        Swal.fire({
+            icon: "warning",
+            title: "Are you sure you want to cancel your appoinment?",
+            text: "Ther is no refund after canceling",
+          
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel it!",
+            customClass: {
+                confirmButton: "btn btn-primary me-3",
+                cancelButton: "btn btn-label-danger",
+            },
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                router.delete(route(`customer-appointments.destroy`, id), {
+                    preserveState: true,
+                    preventScroll: true,
+                    only: ["data", "params"],
+                    onSuccess: () => {
 
+                        toastr.error("Record deleted");
+                        window.location.reload();
+                    },
+                });
+            }
+        });
+    };
 
 
 </script>
@@ -48,9 +78,14 @@ const data = computed(() => {
                             <div
                                 class="bg-white shadow-lg rounded-lg p-6 w-100 mx-10"
                             >
-                                <h2 class="text-xl font-semibold mb-4">
+                            <div class="d-flex justify-between">
+                                <h2 class="text-xl font-semibold mb-4 ">
                                     Appointment Details
                                 </h2>
+                                <a :href="route('reciept', data.id)">Request a Reciept</a>
+
+                            </div>
+                                
 
                                 <p><strong>Date:</strong> {{ data.date }}</p>
                                 <p>
@@ -64,7 +99,7 @@ const data = computed(() => {
 
                                 <hr />
                                 <p>
-                                    <strong>Payment Amount:</strong> ${{
+                                    <strong>Payment Amount:</strong> ₱{{
                                         parseFloat(data.payment_amount).toFixed(
                                             2
                                         )
@@ -93,7 +128,13 @@ const data = computed(() => {
                                     <strong>Status:</strong> {{ data.status }}
                                 </p>
                                 <p><strong>Type:</strong> {{ data.type }}</p>
+                                <div class="flex justify-end gap-2"><primary-button @click="deleteAppointment(data.id)">Cancel Appointment</primary-button><Appointment
+                                    label = Reschedule
+                                    :data = data
+                                    /></div>
                             </div>
+
+                           
                         </div>
                         <div class="flex justify-center " v-else>
                             <div

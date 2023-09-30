@@ -22,7 +22,7 @@ class UpdateApointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "date" => ["required"], "time_start" => ["required"], "type" => ["required"],"user_id" => ["required"],
+            "date" => ["required"], "time_start" => ["required"], "type" => ["required"],"user_id" => ["nullable"],
         ];
     }
 }
