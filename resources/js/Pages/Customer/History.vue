@@ -1,6 +1,7 @@
 <script>
 import CustomerLayout from "@/Layouts/CustomerLayout.vue";
 import Appointment from "../Customer/Index.vue";
+import InputLabel from "@/Components/InputLabel.vue";
 export default {
     props: {
         data: Object,
@@ -23,12 +24,17 @@ import "toastr/build/toastr.css";
 const data = computed(() => {
     return usePage().props.data;
 });
+
+const medicine = computed(() => {
+    return usePage().props.medicine;
+});
 let form = useForm({
     service_id: null,
     description: null,
     date: null,
     title: null,
     xray: [],
+    prescription: [],
 });
 
 const viewDetails = (data) => {
@@ -42,17 +48,19 @@ const viewDetails = (data) => {
         (form.date = data.date),
         (form.title = data.title);
     form.xray = JSON.parse(data.xray);
+    form.prescription = JSON.parse(data.prescription);
 };
 const showModal = ref(false);
 </script>
 <template>
     <CustomerLayout>
         <div
-            class="fixed inset-0 flex items-center justify-center z-50 bg-opacity-50"
+            class="fixed inset-0 flex items-cente justify-center z-50 bg-opacity-50"
             v-if="showModal"
         >
             <div
-                class="bg-white p-8 rounded-lg shadow-lg max-w-3xl min-w-3xl scroll-m-9 overflow-y-auto max-h"
+                class="bg-white my-auto p-8 r overflow-auto rounded-lg shadow-lg max-w-3xl min-w-3xl scroll-m-9 overflow-y-auto max-h"
+                style="max-height: 600px"
             >
                 <div>
                     <div class="flex justify-between items-center mb-4">
@@ -83,9 +91,69 @@ const showModal = ref(false);
                             <td>Date</td>
                             <td>{{ form.date }}</td>
                         </tr>
-                        
+
+                        <!-- {{form}} -->
+
                         <!-- You can add more rows here for other details -->
                     </table>
+                    <hr />
+                    <p>Prescription</p>
+                    <div class="card mb-2 p-2" v-for="item in form.prescription">
+                        <div class="d-flex">
+                            <label
+                                for="description"
+                                class="block text-gray-600 mt-2"
+                            >
+                                Medicine:
+                            </label>
+
+                            <select
+                                disabled
+                                v-model="item.medecine_id"
+                                class="w-full px-4 py-2 focus:ring focus:ring-blue-200"
+                            >
+                                <option value="">Select an option</option>
+                                <option
+                                    v-for="option in medicine"
+                                    :key="option.id"
+                                    :value="option.id"
+                                >
+                                    {{ option.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="d-flex">
+                            <label  for="quantity" class="block mt-2 text-gray-600">
+                                Quantity:
+                            </label>
+                            <input
+                                disabled
+                                v-model="item.quantity"
+                                type="number"
+                                id="quantity"
+                                name="quantity"
+                                class="w-full px-4 py-2 focus:ring focus:ring-blue-200"
+                            />
+                        </div>
+                        <div class="d-flex">
+                            <label
+                                for="description"
+                                class="block text-gray-600 mt-2"
+                            >
+                                Description:
+                            </label>
+                            <textarea
+                                disabled
+                                row="3"
+                                v-model="item.pres_description"
+                                type="text"
+                                id="description"
+                                name="description"
+                                class="w-full px-4 py-2 focus:ring focus:ring-blue-200"
+                            />
+                        </div>
+                    </div>
+                    <hr />
                     <p>Xray Images</p>
                     <div
                         v-for="item in form.xray"

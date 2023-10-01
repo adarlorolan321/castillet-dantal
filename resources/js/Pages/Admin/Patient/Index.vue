@@ -112,12 +112,12 @@ let {
                             >
                                 Email
                             </th>
-                            <th
+                            <!-- <th
                                 scope="col"
                                 class="px-5 py-3 bg-green-template text-white font-semibold uppercase tracking-wider"
                             >
                                 Action
-                            </th>
+                            </th> -->
                             <!-- Add more table headers if needed -->
                         </tr>
                     </thead>
@@ -142,7 +142,7 @@ let {
                                 {{ data.email }}
                             </td>
 
-                            <td
+                            <!-- <td
                                 class="px-5 py-3 border-b border-gray-200 bg-white text-sm"
                             >
                                 <a
@@ -162,7 +162,7 @@ let {
                                             class="fa fa-trash text-danger pt-1"
                                         ></i></a
                                 >
-                            </td>
+                            </td> -->
                             <!-- Add more table data rows if needed -->
                         </tr>
                     </tbody>

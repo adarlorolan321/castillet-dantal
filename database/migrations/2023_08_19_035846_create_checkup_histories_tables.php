@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('title');
             $table->longText('description');
             $table->string('date');
+            $table->json('prescription')->nullable();
             $table->longText('xray');
             $table->timestamps();
         });

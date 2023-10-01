@@ -19,7 +19,7 @@ const options = ref([
 ]);
 
 let form = useForm({
-    id: props.id,
+    id: null,
     date: null,
     time_start: null,
     time_end: null,
@@ -27,8 +27,7 @@ let form = useForm({
     payment_status: "Partial",
     status: "Pending",
     type: null,
-    user_id: user.value.id,
-    // user_id: user.value.id,
+   
 });
 
 const timeOptions = ref([

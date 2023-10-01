@@ -9,7 +9,7 @@ import AddSlotModal from "@/Components/AddSlotModal.vue";
 
 import { ref, computed } from "vue";
 import { reactive } from "vue";
-const user = computed(() => usePage().props.auth.user);
+const user = computed(() => usePage().props?.auth?.user??null);
 const appointmentData = computed(() => usePage().props.data);
 const services = computed(() => usePage().props.service);
 const error = computed(() => usePage().props.errors);
@@ -30,15 +30,15 @@ const props = defineProps({
 });
 
 let form = useForm({
-    id: props.data.id,
-    date: props.data.date,
-    time_start: props.data.time_start,
-    time_end: props.data.time_end,
-    status: props.data.status,
-    type: props.data.id,
-    service_id: props.data.service_id,
-    payment_status: props.data.payment_status,
-    type: props.data.type,
+    id: props?.data?.id ?? null,
+    date: props?.data?.date ?? null,
+    time_start: props?.data?.time_start ?? null,
+    time_end: props?.data?.time_end ?? null,
+    status: props?.data?.status ?? null,
+    type: props?.data?.id ?? null,
+    service_id: props?.data?.service_id ?? null,
+    payment_status: props?.data?.payment_status ?? null,
+    type: props?.data?.type ?? null,
 });
 
 const isModalShow = ref(false);

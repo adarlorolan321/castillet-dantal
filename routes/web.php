@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\CustomerCalendarController;
 use App\Http\Controllers\Customer\ServiceController;
 use App\Http\Controllers\Customer\UserHistoryController;
 use App\Http\Controllers\CustomerAppoinmentController;
+use App\Http\Controllers\Medecine\MedecineController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserCheckupHistoryController;
@@ -103,6 +104,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('unavailable-dates', UnavalableDatesController::class);
     Route::resource('dental-services', DentalServiceController::class);
+    Route::resource('medicines', MedecineController::class);
     Route::resource('customer-apointment', CustomerAppoinmentController::class);
     Route::resource('patients', PatientController::class);
     Route::resource('user-history', UserCheckupHistoryController::class);

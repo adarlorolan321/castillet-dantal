@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CheckupHistoryListResource;
 use App\Models\CheckupHistory;
+use App\Models\Medecine\Medecine;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -37,9 +38,12 @@ class UserHistoryController extends Controller
 
 
         $props = [
+            'medicine' => Medecine::all(),
             'data' => CheckupHistoryListResource::collection($data),
             'params' => $request->all(),
         ];
+
+        // dd($props);
 
         if ($request->wantsJson()) {
             return json_encode($props);

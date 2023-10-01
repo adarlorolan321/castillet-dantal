@@ -143,6 +143,7 @@ let {
                             >
                                 {{ data.amount }}
                             </td>
+                            
                             <td
                                 class="px-5 py-3 border-b border-gray-200 bg-white text-sm"
                             >
@@ -164,14 +165,14 @@ let {
                             <td
                                 class="px-5 py-3 border-b border-gray-200 bg-white text-sm"
                             >
-                                <a
+                                <!-- <a
                                     href="javascript:void(0)"
                                     class="text-blue-500 mr-2"
                                     @click="handleEdit(data)"
                                     ><i
                                             class="fa fa-edit text-primary pt-1"
                                         ></i></a
-                                >
+                                > -->
                                 
                                 <a
                                     href="javascript:void(0)"

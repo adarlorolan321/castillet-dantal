@@ -13,9 +13,11 @@ class CheckupHistory extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
-        "user_id","appointment_id","service_id","title","description","xray","date",
+        "user_id","appointment_id","service_id","title","description","xray","date","prescription"
     ];
-
+    protected $cast = [
+        "prescription" => "array"
+    ];
 
     public function getImagesAttribute()
     {
@@ -39,6 +41,8 @@ class CheckupHistory extends Model implements HasMedia
     {
         return $this->belongsTo(DentalService::class);
     }
+
+    
     
 
 }

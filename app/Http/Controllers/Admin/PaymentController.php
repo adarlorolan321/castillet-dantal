@@ -59,5 +59,16 @@ class PaymentController extends Controller
 
         return Inertia::render('Admin/Payment/Index', $props);
     }
+    public function destroy(Request $request, string $id)
+    {
+        $data = Payment::findOrFail($id);
+        $data->delete();
+        sleep(1);
+
+        if ($request->wantsJson()) {
+            return response(null, 204);
+        }
+        return redirect()->back();
+    }
    
 }
