@@ -120,7 +120,7 @@ const deleteServices = (id) => {
                     >
                         Add Details
                     </h2>
-                    <form @submit.prevent="submitForm">
+                    <form>
                         <div class="row">
                             <div class="mb-4">
                                 <InputLabel for="time_start" value="Type" />

@@ -74,12 +74,7 @@ class UserCheckupHistoryController extends Controller
 
 
         
-        foreach ($request->input('prescription') as $prescription) {
-            $medicine = Medecine::where('id', $prescription['medecine_id'])->first();
-            $medicine->update([
-                'quantity' => $medicine->quantity - $prescription['quantity']
-            ]);
-        }
+       
         // Medecine::where('model_id', $id)->where('collection_name', 'xray');
 
 
@@ -103,7 +98,12 @@ class UserCheckupHistoryController extends Controller
                     ]);
             }
         }
-       
+        foreach ($request->input('prescription') as $prescription) {
+            $medicine = Medecine::where('id', $prescription['medecine_id'])->first();
+            $medicine->update([
+                'quantity' => $medicine->quantity - $prescription['quantity']
+            ]);
+        }
 
         return Redirect::back()->with('status', 'Services created successfully!');
     }
