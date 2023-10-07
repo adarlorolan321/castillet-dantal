@@ -100,8 +100,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/histories', UserHistoryController::class);
     Route::resource('apointment', ApointmentController::class);
+    Route::get('/apointment-list', [ApointmentController::class, 'list'])->name('apointments.list');
     Route::resource('chats', ChatController::class);
-
+    Route::patch('/approve/{id}', [ApointmentController::class, 'approve'])->name('apointment.approve');
     Route::resource('unavailable-dates', UnavalableDatesController::class);
     Route::resource('dental-services', DentalServiceController::class);
     Route::resource('medicines', MedecineController::class);
@@ -111,6 +112,7 @@ Route::middleware('auth')->group(function () {
     // Route::get('user-history/{id}',[UserCheckupHistoryController::class, 'showData'])->name('user-history.getData');
     Route::resource('payments', PaymentController::class);
     Route::resource('customer-appointments', CustomerAppoinmentController::class);
+    Route::patch('/cancel/{id}', [CustomerAppoinmentController::class, 'cancel'])->name('apointment.cancel');
     Route::get('pay', [CustomerAppoinmentController::class, 'pay'])->name('pay');
     Route::get('store_apointment', [CustomerAppoinmentController::class, 'store_apointment'])->name('store_apointment');
     Route::get('get-my-apointment', [CustomerAppoinmentController::class, 'getMyAppointment'])->name('getMyAppointment');

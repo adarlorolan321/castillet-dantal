@@ -57,6 +57,45 @@ class ApointmentController extends Controller
 
         return Inertia::render('Admin/Apointment/Index', $props);
     }
+    public function list(Request $request)
+    {
+
+        $page = $request->input('page', 1); // default 1
+        $perPage = $request->input('perPage', 50); // default 50
+        $queryString = $request->input('query', null);
+        $sort = explode('.', $request->input('sort', 'id'));
+        $order = $request->input('order', 'asc');
+
+        $data = Apointment::query()
+            ->with(['user'])
+            ->where(function ($query) use ($queryString) {
+                if ($queryString && $queryString != '') {
+                    // filter result
+                    // $query->where('column', 'like', '%' . $queryString . '%')
+                    //     ->orWhere('column', 'like', '%' . $queryString . '%');
+                }
+            })
+            ->when(count($sort) == 1, function ($query) use ($sort, $order) {
+                $query->orderBy($sort[0], $order);
+            })
+            ->paginate($perPage)
+            ->withQueryString();
+
+        $props = [
+            'data' => ApointmentListResource::collection($data),
+            'params' => $request->all(),
+        ];
+
+        if ($request->wantsJson()) {
+            return json_encode($props);
+        }
+
+        if (count($data) <= 0 && $page > 1) {
+            return redirect()->route('apointments.index', ['page' => 1]);
+        }
+
+        return Inertia::render('Admin/Appointment/Index', $props);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -192,5 +231,13 @@ class ApointmentController extends Controller
             return response(null, 204);
         }
         return redirect()->back();
+    }
+
+    public function approve(Request $request, string $id){
+
+        Apointment::findOrFail($id)->update([
+            'status' => 'Approved'
+        ]);
+       
     }
 }

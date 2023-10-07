@@ -42,7 +42,7 @@ const deleteAppointment = async (id) => {
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                router.delete(route(`customer-appointments.destroy`, id), {
+                router.patch(route(`apointment.cancel`, id), {
                     preserveState: true,
                     preventScroll: true,
                     only: ["data", "params"],

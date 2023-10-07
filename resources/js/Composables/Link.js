@@ -2,6 +2,7 @@ export function useLink(id) {
     const sideNavLinks = [
         {label: 'Dashboard', icon: 'home', route: 'dashboard', base_route: 'dashboard'},
         {label: 'Patients', icon: 'home',  route: 'patients.index', base_route: 'patients.*',  access: 'Admin'},
+        {label: 'Appointments', icon: 'home',  route: 'apointments.list', base_route: 'apointments.list',  access: 'Admin'},
         {label: 'Inventory', icon: 'home',  route: 'medicines.index', base_route: 'medicines.*',  access: 'Admin'},
         { label: 'Calendar', icon: 'hotel', route: 'apointment.index', base_route: 'apointment.*',  access: 'Admin' },
         { label: 'Unavailable Dates', icon: 'paper-plane', route: 'unavailable-dates.index', base_route: 'unavailable-dates.*' ,access: 'Admin'},

@@ -38,7 +38,7 @@ class CustomerAppoinmentController extends Controller
             ]);
         }
 
-        $hasAppointment = Apointment::where('user_id', auth()->user()->id)->first();
+        $hasAppointment = Apointment::where('user_id', auth()->user()->id)->where('status','!=', 'Cancel')->first();
         if ($hasAppointment) {
             return redirect()->route('dashboard')->withErrors([
                 'date' => 'You already have an appointment'
@@ -105,7 +105,7 @@ class CustomerAppoinmentController extends Controller
     }
     public function store_apointment(Request $request)
     {
-        $hasAppointment = Apointment::where('user_id', auth()->user()->id)->first();
+         $hasAppointment = Apointment::where('user_id', auth()->user()->id)->where('status','!=', 'Cancel')->first();
         if ($hasAppointment) {
             return redirect()->route('dashboard');
         }
@@ -230,7 +230,7 @@ class CustomerAppoinmentController extends Controller
     }
     public function store(StoreApointmentRequest $request)
     {
-        $hasAppointment = Apointment::where('user_id', auth()->user()->id)->first();
+         $hasAppointment = Apointment::where('user_id', auth()->user()->id)->where('status','!=', 'Cancel')->first();
 
 
         $validatedData = $request->validated();
@@ -322,12 +322,20 @@ class CustomerAppoinmentController extends Controller
     public function getMyAppointment()
     {
         $service = DentalService::get();
-        $myAppointment = Apointment::with('service')->where('user_id', auth()->user()->id)->first();
+        $myAppointment = Apointment::with('service')->where('user_id', auth()->user()->id)->whereIn('status', ['Pending', 'Approved'])->first();
 
 
         return Inertia::render('Customer/MyAppointment', [
             'appointment' => $myAppointment,
             'service' => $service
         ]);
+    }
+
+    public function cancel(Request $request, string $id){
+
+        Apointment::findOrFail($id)->update([
+            'status' => 'Cancel'
+        ]);
+       
     }
 }
